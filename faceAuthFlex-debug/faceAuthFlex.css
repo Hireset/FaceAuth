@@ -1,0 +1,15 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+global {
+	font-size: 14;
+	font-family: Arial;
+	color: #111111;	
+}
+
+#message {
+	font-size: 20;
+	color:#73880A;
+}
