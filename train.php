@@ -1,6 +1,8 @@
 <?php require_once "inc/header.php"; ?>
 
-<h3>Add a face:</h3>
+<div id="message"></div>
+
+<h3>Facedetection:</h3>
 
 <label for="userId">Username:</label>
 <input type="text" size="40" id="userId">
@@ -10,6 +12,7 @@
 
 <p>
 <input type="button" value=" Add face " id="addButton" class="submit">
+<input type="button" value=" Train face " id="trainButton" class="submit">
 <input type="button" value=" Recognize face " id="recButton" class="submit">
 </p>
 
