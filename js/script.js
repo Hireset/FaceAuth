@@ -10,7 +10,7 @@ var FaceDetection = {
 
     $('#addButton').click($.proxy(FaceDetection.addFace, this));
     $('#recButton').click($.proxy(FaceDetection.recFace, this));
-    $('#trainButton').click($.proxy(FaceDetection.trainFace, this));
+    console.log(FaceDetection.imageUrlDomObj)
   },
 
   //--------------------------------------
@@ -54,14 +54,6 @@ var FaceDetection = {
   saveTag : function(options) {
     FaceDetection.showMessage('Saving tag ... ');
     FaceClientAPI.tags_save(options, FaceDetection.train);
-  },
-
-  trainFace : function() {
-    console.log('Train()', data);
-    var uids = FaceDetection.userId + '@' + FaceDetection.namespace;
-    var options = { uids : uids, namespace : FaceDetection.namespace };
-
-    FaceClientAPI.faces_train(options, FaceDetection.finish);
   },
 
   train : function(data) {

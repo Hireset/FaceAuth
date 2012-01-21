@@ -12,7 +12,6 @@
 
 <p>
 <input type="button" value=" Add face " id="addButton" class="submit">
-<input type="button" value=" Train face " id="trainButton" class="submit">
 <input type="button" value=" Recognize face " id="recButton" class="submit">
 </p>
 
