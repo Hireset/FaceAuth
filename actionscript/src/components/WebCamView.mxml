@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="600" height="440"
+		 creationComplete="creationCompleteHandler()">
+	<fx:Declarations>
+		<!-- Platzieren Sie nichtvisuelle Elemente (z. B. Dienste, Wertobjekte) hier -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="newFrame", type="flash.events.Event")]		
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import models.Webcam;			
+			import mx.controls.Alert;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.graphics.ImageSnapshot;
+			
+			[Bindable]
+			public var model:Webcam = new Webcam();			
+			
+			// -----------------------------------------------------
+			private function creationCompleteHandler():void {	
+				if(!model.initWebcam())
+					Alert.show("Could not detect a webcam !");
+
+				webcam.attachCamera(model.camera);
+				addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			}
+			
+			private function addedToStageHandler(e:Event):void {
+				stage.addEventListener(KeyboardEvent.KEY_UP, keyboardEventHandler);
+			}
+			
+			// -----------------------------------------------------
+			private function keyboardEventHandler(e:KeyboardEvent):void {
+				// F5 for picture
+				if(e.keyCode == 116)
+					authUser();
+			}
+			
+			// -----------------------------------------------------
+			public function authUser():void {
+				var bd:BitmapData = ImageSnapshot.captureBitmapData(canvas);
+				model.authenticate(bd);
+			}
+			
+			public function addUser():void {
+				var bd:BitmapData = ImageSnapshot.captureBitmapData(canvas);
+				if(userId.text.length)
+					model.addUser(bd, userId.text);
+				else
+					Alert.show("This user needs a name!");
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup>
+		<s:Group id="canvas">
+			<mx:VideoDisplay id="webcam" width="{model.camWidth}" height="{model.camHeight}" click="authUser()" />						
+		</s:Group>
+		
+		<s:HGroup gap="20">
+			<s:Button label="Authenticate" id="recordButton" click="authUser()" width="140" height="50" cornerRadius="10"/>
+			<s:Button label="Add User" id="trainButton" click="addUser()" width="140" height="50" cornerRadius="10"/>
+			<s:TextInput id="userId" width="140" height="50"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:Rect id="placeholderRect" width="600" height="40" x="0" y="0" visible="{model.showMessageRect}">
+		<s:fill>
+			<s:SolidColor color="#F6F6F6"/>
+		</s:fill>
+	</s:Rect>
+	<s:Label id="message" x="10" y="10" text="{model.message}"/>	
+</s:Group>
+	
