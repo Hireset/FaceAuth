@@ -44,7 +44,7 @@ package models
 
 			faceApi = new FaceApi();
 			faceApi.apiKey = "3136ddde054c80b6b39ae0e9db867636";
-			faceApi.apiSecret = "1c24684e2c6677b5f21045f227698834";
+			faceApi.apiSecret = "NOT_GIT";
 
 			isTraining = false;
 			isRecognition = false;
