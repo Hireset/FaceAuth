@@ -7,17 +7,15 @@ package models
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.external.ExternalInterface;
 	import flash.media.Camera;
 	import flash.media.Video;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
-
 	import mx.collections.ArrayCollection;
 	import mx.graphics.codec.JPEGEncoder;
-
 	import net.metafor.faceapi.FaceApi;
 	import net.metafor.faceapi.events.FaceEvent;
-
 	import spark.components.List;
 
 	[Bindable]
@@ -44,10 +42,9 @@ package models
 		public function Webcam() {
 			camWidth = 600;
 
-			//Créez une insatnce de FaceApi
 			faceApi = new FaceApi();
 			faceApi.apiKey = "3136ddde054c80b6b39ae0e9db867636";
-			faceApi.apiSecret = "NOT_AT_GITHUB";
+			faceApi.apiSecret = "1c24684e2c6677b5f21045f227698834";
 
 			isTraining = false;
 			isRecognition = false;
@@ -68,33 +65,32 @@ package models
 		}
 
 		// -----------------------------------------------------
+		// Authenticate a face
 		public function authenticate(bitmapData:BitmapData):void {
 			trace("Going to recognize ... ");
 			faceApi.recognitionService.addEventListener( FaceEvent.SUCCESS , onRecognizeSuccess);
 			faceApi.recognitionService.addEventListener( FaceEvent.FAIL , onRecognizeFail);
 			bmp = new Bitmap(bitmapData);
 			message = "Searching ...";
-			showMessageRect = true;
 			//
 			faceApi.recognitionService.uploadAndRecognize(bmp , ["all" + faceApiNamespace] );
 		}
 
-		//
+		// Add new user to the face.com index
 		public function addUser(bitmapData:BitmapData, userId:String):void {
 			trace("Going to add new user ...");
+			message = "Adding user to index ...";
 			faceApi.recognitionService.addEventListener( FaceEvent.SUCCESS , onDetectSuccess );
 			faceApi.recognitionService.addEventListener( FaceEvent.FAIL , onDetectFail );
 			bmp = new Bitmap(bitmapData);
 			isTraining = true;
-			message = "Adding user to index ...";
-			showMessageRect = true;
 			userIdToAdd = userId;
 			//
 			faceApi.recognitionService.uploadAndDetect(bmp);
 		}
 
 		//
-		private function onDetectSuccess( evt : FaceEvent ):void {
+		private function onDetectSuccess(evt:FaceEvent ):void {
 			faceApi.recognitionService.removeEventListener( FaceEvent.SUCCESS , onDetectSuccess );
 
 			trace(evt.rawResult);
@@ -102,8 +98,9 @@ package models
 			trace(tid);
 			//
 			if(isTraining && userIdToAdd.length > 0) {
-				trace(userIdToAdd);
-				faceApi.tagsService.save( tid , userIdToAdd + faceApiNamespace );
+				trace(userIdToAdd, tid);
+				var username:String = userIdToAdd + faceApiNamespace;
+				faceApi.tagsService.save( tid , username, userIdToAdd );
 				isTraining = false;
 				message = "User " + userIdToAdd + " added to the index";
 			}
@@ -118,16 +115,16 @@ package models
 				var confidence:String = evt.data.photos[0].tags[0].uids[0].confidence;
 				trace(uid, confidence);
 				message = "User " + uid + " found. Confidence: " + confidence + "%";
+				var toJs:int = ExternalInterface.call("setVisitorName", uid);
 			}
 			catch(error:Error) {
 				message = "User not found";
 			}
 		}
 
-
 		//
 		private function onDetectFail( evt : FaceEvent ):void {
-			message = "Error: not able to be added to the index";
+			message = "Error while detecting face!";
 		}
 
 		//
@@ -184,6 +181,7 @@ package models
 		}
 
 		public function set message(value:String):void {
+			showMessageRect = true;
 			_message = value;
 		}
 

@@ -33,7 +33,19 @@
         <link rel="stylesheet" type="text/css" href="history/history.css" />
         <script type="text/javascript" src="history/history.js"></script>
         <!-- END Browser History required section -->  
-            
+        
+        <script>
+            // JS function which obtains username from actionscript
+            var setVisitorName = function (name) {
+                var inputVisitorName = window.parent.document.getElementById('faceAuth_name');
+                console.log(inputVisitorName, window.parent);
+                var inputUserIdName = "faceAuth_name";
+                if(!name) { return false};
+                var inputVisitorName = window.parent.document.getElementById(inputUserIdName);
+                inputVisitorName.value = name;
+            }
+        </script>
+
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
             // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
