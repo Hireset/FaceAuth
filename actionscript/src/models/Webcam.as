@@ -35,9 +35,10 @@ package models
 		private var faceApiNamespace:String;
 		private var isTraining:Boolean;
 		private var isRecognition:Boolean;
-		public var userIdToAdd:String;
+		public  var userIdToAdd:String;
+		private var SECRET_KEY:String;
 		private var _message:String;
-		public var showMessageRect:Boolean = false;
+		public  var showMessageRect:Boolean = false;
 
 		public function Webcam() {
 			camWidth = 600;
@@ -50,6 +51,7 @@ package models
 			isRecognition = false;
 			faceApiNamespace = "@webarbeit";
 			userIdToAdd = "";
+			SECRET_KEY = 'Med1a_Cube$Even7';
 		}
 
 		// -----------------------------------------------------
@@ -115,11 +117,17 @@ package models
 				var confidence:String = evt.data.photos[0].tags[0].uids[0].confidence;
 				trace(uid, confidence);
 				message = "User " + uid + " found. Confidence: " + confidence + "%";
-				var toJs:int = ExternalInterface.call("setVisitorName", uid);
+				var toJs:int = ExternalInterface.call("setVisitorNameAndToken", uid, createToken(uid));
 			}
 			catch(error:Error) {
 				message = "User not found";
 			}
+		}
+
+		private function createToken(uid:String):String {
+		  var timestamp:Date = ;
+		  var token:String = SHA1.hash(SECRET_KEY + uid + timestamp); 
+		  return token + ':' + timestamp;
 		}
 
 		//
